@@ -1,0 +1,50 @@
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
+import {
+  BellIcon,
+  Minus,
+  Plus,
+  SettingsIcon,
+  ShoppingCart,
+  Trash2,
+  X,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+export default function Header() {
+  return (
+    <header className="bg-accent-foreground text-primary w-full">
+      <div className="w-full flex items-center justify-between px-3 lg:px-4 py-1">
+        <Link to="/client/dashboard" className="flex items-center gap-2 p-2 ">
+          <img
+            src="/images/logo.png"
+            alt=""
+            className="w-auto h-9 md:h-12 lg:h-15"
+          />
+        </Link>
+
+        <div className="flex items-center gap-4 ml-4">
+          <button className="relative p-2 rounded-md cursor-pointer">
+            <BellIcon size={20} />
+            <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+          </button>
+          <Link
+            to="/client/profile"
+            className="flex gap-2 items-center p-1 rounded-full"
+          >
+            <img
+              src="https://picsum.photos/600/400"
+              alt="Profile"
+              className="h-10 w-10 rounded-full object-cover "
+            />
+            <div className="md:flex flex-col gap-1 hidden">
+              <span className="text-sm font-bold">Monir El-Marnysy</span>
+              <span className="text-xs opacity-30">
+                marnissimounir05@gmail.com
+              </span>
+            </div>
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
