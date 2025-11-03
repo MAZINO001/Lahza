@@ -143,6 +143,8 @@ import AppLayout from "./pages/AppLayout";
 import Dashboard from "./pages/client/Dashboard";
 
 // Get user and role
+
+
 const user = JSON.parse(localStorage.getItem("user"));
 const currentRole = user?.role;
 

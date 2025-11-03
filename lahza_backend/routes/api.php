@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route; // <-- FIXED
 use App\Models\User;
+use App\Http\Controllers\QuotesController;
 
 Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
@@ -26,3 +27,7 @@ Route::get('clients/{id}', [ClientController::class, 'show']);
 Route::put('clients/{id}', [ClientController::class, 'update']);
 Route::delete('clients/{id}', [ClientController::class, 'destroy']);
 Route::get('clients/me', [ClientController::class, 'me']);
+
+//////////////////// Qotations Section \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+Route::apiResource('quotes', QuotesController::class);
