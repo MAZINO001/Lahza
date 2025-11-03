@@ -190,10 +190,9 @@ export default function UsersTable() {
   useEffect(() => {
     setLoading(true);
     const res = axios
-      .get("http://localhost:8000/api/clients")
+      .get(`${import.meta.env.BACKEND_URL}/api/clients`)
       .then((res) => {
         setLoading(false);
-        console.log(res.data);
         setClients(res.data);
       })
       .catch((err) => {
@@ -207,7 +206,7 @@ export default function UsersTable() {
     try {
       setMessage("Preparing download...");
       const res = await axios.get(
-        `http://localhost:8000/api/export?format=${format}`,
+        `${import.meta.env.BACKEND_URL}/api/export?format=${format}`,
         {
           responseType: "blob",
         }
