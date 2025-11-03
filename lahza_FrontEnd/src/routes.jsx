@@ -125,7 +125,6 @@ import ForgotPassword from "./pages/Auth/ForgotPassword";
 import ConfirmPassword from "./pages/Auth/ConfirmPassword";
 import ResetPassword from "./pages/Auth/ResetPassword";
 
-import Layout from "./pages/Layout";
 import NotFound from "./pages/NotFound ";
 
 import QuoteDetails from "./pages/client/QuoteDetails";
@@ -138,8 +137,10 @@ import Tickets from "./pages/client/Tickets";
 import Payments from "./pages/client/Payments";
 import Offers from "./pages/client/Offers";
 import ProjectDetails from "./pages/client/ProjectDetails";
-import Dashboard_Comp from "./Components/Dashboard_Comp";
 import Clients from "./pages/client/clients";
+import AuthLayout from "./pages/AuthLayout";
+import AppLayout from "./pages/AppLayout";
+import Dashboard from "./pages/client/Dashboard";
 
 // Get user and role
 const user = JSON.parse(localStorage.getItem("user"));
@@ -182,7 +183,7 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/auth" element={<Layout />}>
+        <Route path="/auth" element={<AuthLayout />}>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="confirmPassword" element={<ConfirmPassword />} />
@@ -207,7 +208,7 @@ export default function AppRoutes() {
             path={`/${role}`}
             element={
               <ProtectedRoute allowedRoles={[role]}>
-                <Layout />
+                <AppLayout />
               </ProtectedRoute>
             }
           >
@@ -215,7 +216,7 @@ export default function AppRoutes() {
               path="dashboard"
               element={
                 <ProtectedRoute allowedRoles={routePermissions.dashboard}>
-                  <Dashboard_Comp currentRole={currentRole} />
+                  <Dashboard currentRole={currentRole} />
                 </ProtectedRoute>
               }
             />

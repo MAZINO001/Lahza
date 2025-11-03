@@ -199,7 +199,7 @@ export default function Login({ status, canResetPassword }) {
     }
   };
   return (
-    <div className="flex h-screen flex-col items-center justify-center lg:flex-row">
+    <div className="flex h-screen w-full p-4 rounded-2xl flex-col items-center justify-center lg:flex-row">
       {/* Left - Form */}
       <div className="bg-white flex w-full items-center justify-center px-6 sm:w-1/2 sm:px-12">
         <div className="w-full max-w-md">
