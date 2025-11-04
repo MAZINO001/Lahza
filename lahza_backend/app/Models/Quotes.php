@@ -30,4 +30,8 @@ class Quotes extends Model
     {
         return $this->morphMany(File::class, 'fileable');
     }
+       public function quoteServices()
+    {
+        return $this->hasMany(Quotes_service::class, 'quote_id');
+    }
 }
