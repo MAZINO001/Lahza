@@ -24,6 +24,7 @@ import { mockQuotes } from "../../lib/mockData";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowUpDown, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 // Mock user
 const mockUser = {
@@ -63,12 +64,16 @@ export const columns = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Quote #
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        Quote Id <ArrowUpDown className="ml-1 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("quote_number")}</div>
+      <Link
+        to={`/client/quotes/${row.getValue("quote_number")}`}
+        className="font-medium text-stale-900 hover:underline"
+      >
+        {row.getValue("quote_number")}
+      </Link>
     ),
   },
   {

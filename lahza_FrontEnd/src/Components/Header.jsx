@@ -9,18 +9,21 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 import { Link } from "react-router-dom";
 export default function Header() {
+  const { role } = useAuth();
   return (
     <header className="bg-accent-foreground text-primary w-full">
-      <div className="w-full flex items-center justify-between px-3 lg:px-4 py-1">
-        <Link to="/client/dashboard" className="flex items-center gap-2 p-2 ">
+      <div className="w-full flex items-center justify-between px-2 py-2 lg:px-4 ">
+        {/* <Link to="/client/dashboard" className="flex items-center gap-2 p-2 ">
           <img
             src="/images/logo.png"
             alt=""
             className="w-auto h-9 md:h-12 lg:h-15"
           />
-        </Link>
+        </Link> */}
+        <div> {role}</div>
 
         <div className="flex items-center gap-4 ml-4">
           <button className="relative p-2 rounded-md cursor-pointer">
