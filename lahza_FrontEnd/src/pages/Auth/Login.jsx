@@ -222,7 +222,7 @@ export default function Login({ status, canResetPassword }) {
       await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
         withCredentials: true,
       });
-      const res = await axios.post("http://localhost:8000/api/login", data, {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, data, {
         withCredentials: true,
         headers: {
           Accept: "application/json",
