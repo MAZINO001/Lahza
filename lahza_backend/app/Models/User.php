@@ -43,7 +43,7 @@ class User extends Authenticatable
 
     public function teams()
     {
-        return $this->belongsToMany(Team::class, 'team_users')
+        return $this->belongsToMany(TeamUser::class, 'team_users')
                     ->withPivot('poste')
                     ->withTimestamps();
     }
