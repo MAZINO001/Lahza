@@ -11,4 +11,10 @@ class TeamUser extends Model
         'user_id',   // needed for your registration logic
         'poste',     // optional, but included if set
     ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'team_users')
+                    ->withPivot('poste')
+                    ->withTimestamps();
+    }
 }
