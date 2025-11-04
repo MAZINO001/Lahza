@@ -64,7 +64,7 @@ export function ClientForm() {
     console.log("Filled data:", filledData);
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/register",
+        `${import.meta.env.VITE_BACKEND_URL}/register`,
         filledData
       );
       console.log("Registration successful:", response.data);

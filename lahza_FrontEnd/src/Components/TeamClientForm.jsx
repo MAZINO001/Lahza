@@ -80,7 +80,7 @@ export function TeamClientForm() {
       });
 
       const response = await axios.post(
-        "http://localhost:8000/api/register",
+        `${import.meta.env.VITE_BACKEND_URL}/register`,
         formData,
         {
           headers: {

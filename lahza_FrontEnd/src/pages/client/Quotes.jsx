@@ -168,20 +168,24 @@ export const columns = [
   // },
 ];
 
-export default function QuotesTable({ currentRole }) {
+import { useAuth } from "@/hooks/useAuth";
+import axios from "axios";
+
+export default function QuotesTable() {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
+  const { role } = useAuth();
   useEffect(() => {
     loadQuotes();
   }, []);
 
   const loadQuotes = async () => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    const res = axios.get(`${import.meta.env.VITE_BACKEND_URL}/quotes`);
+    console.log(res);
     setQuotes(mockQuotes);
     setLoading(false);
   };
@@ -224,7 +228,7 @@ export default function QuotesTable({ currentRole }) {
           }
           className="max-w-sm"
         />
-        {currentRole === "admin" ? (
+        {role === "admin" ? (
           <Button>Add New Quote</Button>
         ) : (
           <Button>Request New Quote</Button>

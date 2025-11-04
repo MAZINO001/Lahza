@@ -189,8 +189,9 @@ export default function UsersTable() {
 
   useEffect(() => {
     setLoading(true);
+
     const res = axios
-      .get(`${import.meta.env.BACKEND_URL}/api/clients`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/clients`)
       .then((res) => {
         setLoading(false);
         setClients(res.data);
@@ -206,7 +207,7 @@ export default function UsersTable() {
     try {
       setMessage("Preparing download...");
       const res = await axios.get(
-        `${import.meta.env.BACKEND_URL}/api/export?format=${format}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/export?format=${format}`,
         {
           responseType: "blob",
         }
@@ -239,7 +240,7 @@ export default function UsersTable() {
     try {
       setUploadProgress(0);
       const res = await axios.post(
-        "http://localhost:8000/api/import",
+        `${import.meta.env.VITE_BACKEND_URL}/api/import`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
