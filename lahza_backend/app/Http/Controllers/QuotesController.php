@@ -19,7 +19,7 @@ class QuotesController extends Controller
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',
             'quotation_date' => 'required|date',
-            'status' => 'required|string',
+            'status' => 'required|in:draft,sended,confirmed,signed,rejected',
             'total_amount' => 'required|numeric',
         ]);
 
@@ -42,7 +42,7 @@ class QuotesController extends Controller
         $validated = $request->validate([
             'client_id' => 'sometimes|exists:clients,id',
             'quotation_date' => 'sometimes|date',
-            'status' => 'sometimes|string',
+            'status' => 'required|in:draft,sended,confirmed,signed,rejected',
             'total_amount' => 'sometimes|numeric',
         ]);
 
