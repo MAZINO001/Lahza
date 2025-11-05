@@ -13,24 +13,6 @@ import ErrorMessage from "../../Components/Form/ErrorMessage";
 export default function CountrySelect({ value, onChange, errors }) {
   const [countries, setCountries] = useState([]);
   const [search, setSearch] = useState("");
-
-  // useEffect(() => {
-  //   const fetchCountries = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         "https://restcountries.com/v3.1/all?fields=name,translations"
-  //       );
-  //       const data = await response.json();
-  //       const sorted = data
-  //         .map((c) => c.translations?.fra?.common || c.name.common)
-  //         .sort((a, b) => a.localeCompare(b, "fr"));
-  //       setCountries(sorted);
-  //     } catch (err) {
-  //       console.error("Failed to load countries:", err);
-  //     }
-  //   };
-  //   fetchCountries();
-  // }, []);
   useEffect(() => {
     const fetchCountries = async () => {
       try {

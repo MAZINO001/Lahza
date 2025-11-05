@@ -45,6 +45,7 @@ import { CloseButton } from "@headlessui/react";
 import { mockUsers } from "@/lib/mockData";
 import axios from "axios";
 import Papa from "papaparse";
+import { Link } from "react-router-dom";
 export const columns = [
   // {
   //   id: "select",
@@ -82,9 +83,12 @@ export const columns = [
       const id = row.getValue("id");
       const formattedId = `CLIENT-${id.toString().padStart(4, "0")}`;
       return (
-        <div className="font-medium text-slate-900 hover:underline">
+        <Link
+          to={`/client/clients/${id}`}
+          className="font-medium text-slate-900 hover:underline"
+        >
           {formattedId}
-        </div>
+        </Link>
       );
     },
   },
@@ -124,15 +128,20 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "city",
-    header: "City",
-    cell: ({ row }) => <div>{row.getValue("city")}</div>,
+    accessorKey: "spending_total",
+    header: "Client Type",
+    cell: ({ row }) => <span className="text-slate-600">$1200.00</span>,
   },
-  {
-    accessorKey: "country",
-    header: "Country",
-    cell: ({ row }) => <div>{row.getValue("country")}</div>,
-  },
+  // {
+  //   accessorKey: "city",
+  //   header: "City",
+  //   cell: ({ row }) => <div>{row.getValue("city")}</div>,
+  // },
+  // {
+  //   accessorKey: "country",
+  //   header: "Country",
+  //   cell: ({ row }) => <div>{row.getValue("country")}</div>,
+  // },
   // {
   //   id: "actions",
   //   enableHiding: false,
@@ -213,7 +222,7 @@ export default function UsersTable() {
     try {
       setMessage("Preparing download...");
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/export?format=${format}`,
+        `${import.meta.env.VITE_BACKEND_URL}/export?format=${format}`,
         {
           responseType: "blob",
         }
@@ -246,7 +255,7 @@ export default function UsersTable() {
     try {
       setUploadProgress(0);
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/import`,
+        `${import.meta.env.VITE_BACKEND_URL}/import`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

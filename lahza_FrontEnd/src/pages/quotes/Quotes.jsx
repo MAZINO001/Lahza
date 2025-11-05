@@ -190,8 +190,7 @@ export default function QuotesTable() {
   const loadQuotes = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quotes`);
-      console.log(res.data);
-      setQuotes(res.data);
+      setQuotes(res.data.quotes);
     } catch (error) {
       console.error("Error loading quotes:", error);
     } finally {
@@ -228,14 +227,17 @@ export default function QuotesTable() {
   return (
     <div className="w-full p-4">
       <div className="flex items-center justify-between  mb-4">
-        <Input
-          placeholder="Filter by title..."
-          value={table.getColumn("title")?.getFilterValue() ?? ""}
+        {/* <Input
+          placeholder="Filter by status..."
+          value={table.getColumn("status")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("status")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-        />
+        /> */}
+
+
+
         {role === "admin" ? (
           <Button>Add New Quote</Button>
         ) : (

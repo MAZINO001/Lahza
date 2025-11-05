@@ -13,11 +13,13 @@ import Projects from "../pages/projects/Projects";
 import ProjectDetails from "../pages/projects/ProjectDetails";
 import Quotes from "../pages/quotes/Quotes";
 import QuoteDetails from "../pages/quotes/QuoteDetails";
-import Tickets from "../pages/Tickets";
+import Tickets from "../pages/Tickets/Tickets";
 import Invoices from "../pages/invoices/Invoices";
-import Payments from "../pages/Payments";
-import Offers from "../pages/Offers";
+import Payments from "../pages/Payments/Payments";
+import Offers from "../pages/Offers/Offers";
 import Clients from "../pages/clients/Clients";
+import ClientDetails from "../pages/clients/clientDetails";
+import AddQuote from "../pages/quotes/addNew";
 
 import AuthLayout from "../pages/layouts/AuthLayout";
 import AppLayout from "../pages/layouts/AppLayout";
@@ -64,11 +66,13 @@ export default function AppRoutes() {
             <Route path="projects/:id" element={<ProjectDetails />} />
             <Route path="quotes" element={<Quotes />} />
             <Route path="quotes/:id" element={<QuoteDetails />} />
+            <Route path="quotes/new" element={<AddQuote />} />
             <Route path="tickets" element={<Tickets />} />
             <Route path="invoices" element={<Invoices />} />
             <Route path="payments" element={<Payments />} />
             <Route path="offers" element={<Offers />} />
             <Route path="clients" element={<Clients />} />
+            <Route path="clients/:id" element={<ClientDetails />} />
           </Route>
         </Route>
 

@@ -23,9 +23,13 @@ export default function Inv_Qt_page({ type, data }) {
             <Send size={20} />
           </button>
           <div className="w-px h-6 bg-gray-300 mx-2"></div>
-          <Button variant="outline" className="text-sm">
-            Convert to Invoice
-          </Button>
+          {type === "quote" ? (
+            <Button variant="outline" className="text-sm">
+              Convert to Invoice
+            </Button>
+          ) : (
+            ""
+          )}
         </div>
       </div>
 

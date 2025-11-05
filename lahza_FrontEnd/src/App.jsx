@@ -1,5 +1,5 @@
 // import i18n from "./lib/i18n";
-import AppRoutes from "./Routes";
+import AppRoutes from "./Routes/index";
 
 export default function App() {
   // <div>

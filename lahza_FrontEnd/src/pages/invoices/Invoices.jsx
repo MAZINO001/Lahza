@@ -390,7 +390,7 @@ export const columns = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Quote ID <ArrowUpDown className="ml-1 h-4 w-4" />
+        Invoice ID <ArrowUpDown className="ml-1 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {

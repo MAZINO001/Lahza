@@ -13,7 +13,7 @@ class ShowTableColumns extends Command
      *
      * @var string
      */
-    protected $signature = 'db:columns';
+protected $signature = 'db:columns';
 
     /**
      * The console command description.
@@ -27,7 +27,7 @@ class ShowTableColumns extends Command
      */
     public function handle()
     {
-        $tables = DB::select('SHOW TABLES');
+         $tables = DB::select('SHOW TABLES');
         $key = array_key_first((array)$tables[0]);
 
         foreach ($tables as $table) {

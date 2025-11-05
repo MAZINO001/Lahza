@@ -1,17 +1,22 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Inv_Qt_sidebar({ type, data }) {
   const title = type === "invoice" ? "All Invoices" : "All Quotes";
+  const { role } = useAuth();
   return (
     <div className="w-[260px] bg-white border-r flex flex-col">
       {/* Sidebar Header */}
       <div className="px-2 py-4 border-b flex items-center gap-3">
         <h1 className="text-lg flex-1 font-medium rounded">{title}</h1>
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm">
-          + New
-        </Button>
+        <Link to={`/${role}/quotes/new`}>
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm">
+            + New
+          </Button>
+        </Link>
         <button className=" p-2 hover:bg-gray-100 rounded cursor-pointer">
           <Menu size={20} />
         </button>
@@ -29,14 +34,16 @@ export default function Inv_Qt_sidebar({ type, data }) {
             }`}
           >
             <div className="flex items-start justify-between mb-2">
-              <span className="font-medium text-gray-900">{quote.name}</span>
+              <span className="font-medium text-gray-900">
+                {quote.client.user.name}
+              </span>
               <span className="font-semibold text-gray-900">
-                {quote.amount}
+                {quote.total_amount}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-blue-600">{quote.id}</span>
-              <span className="text-gray-500">{quote.date}</span>
+              <span className="text-gray-500">{quote.quotation_date}</span>
               <span
                 className={`px-2 py-0.5 rounded text-xs font-medium ${
                   quote.status === "ACCEPTED"
