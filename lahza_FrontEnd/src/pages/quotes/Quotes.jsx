@@ -24,7 +24,7 @@ import { mockQuotes } from "@/lib/mockData";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowUpDown, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, Links } from "react-router-dom";
 
 // Mock user
 const mockUser = {
@@ -236,10 +236,10 @@ export default function QuotesTable() {
           className="max-w-sm"
         /> */}
 
-
-
         {role === "admin" ? (
-          <Button>Add New Quote</Button>
+          <Link to={`/${role}/quotes/new`}>
+            <Button>Add New Quote</Button>
+          </Link>
         ) : (
           <Button>Request New Quote</Button>
         )}

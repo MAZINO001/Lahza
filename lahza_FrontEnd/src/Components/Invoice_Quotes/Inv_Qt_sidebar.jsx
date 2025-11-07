@@ -9,7 +9,6 @@ export default function Inv_Qt_sidebar({ type, data }) {
   const { role } = useAuth();
   return (
     <div className="w-[260px] bg-white border-r flex flex-col">
-      {/* Sidebar Header */}
       <div className="px-2 py-4 border-b flex items-center gap-3">
         <h1 className="text-lg flex-1 font-medium rounded">{title}</h1>
         <Link to={`/${role}/quotes/new`}>
@@ -22,7 +21,6 @@ export default function Inv_Qt_sidebar({ type, data }) {
         </button>
       </div>
 
-      {/* Sidebar Body */}
       <div className="flex-1 overflow-y-auto">
         {data.map((quote, index) => (
           <div

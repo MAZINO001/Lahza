@@ -29,12 +29,15 @@ class QuotesController extends Controller
             'client_id' => 'required|exists:clients,id',
             'quotation_date' => 'required|date',
             'status' => 'required|in:draft,sended,confirmed,signed,rejected',
+            'notes' => 'nullable|string',
+            'total_amount' => 'required|numeric',
             'services' => 'array',
             'services.*.service_id' => 'required|exists:services,id',
             'services.*.quantity' => 'required|integer|min:1',
             'services.*.tax' => 'nullable|numeric',
             'services.*.individual_total' => 'nullable|numeric',
         ]);
+
 
         return DB::transaction(function () use ($validated) {
 
@@ -43,7 +46,8 @@ class QuotesController extends Controller
                 'client_id' => $validated['client_id'],
                 'quotation_date' => $validated['quotation_date'],
                 'status' => $validated['status'],
-                'total_amount' => $validated['total_amount'] ?? 0,
+                'notes' => $validated['notes'],
+                'total_amount' => $validated['total_amount'],
             ]);
 
             // Insert pivot records
@@ -76,15 +80,18 @@ class QuotesController extends Controller
         $quote = Quotes::findOrFail($id);
 
         $validated = $request->validate([
-            'client_id' => 'sometimes|exists:clients,id',
-            'quotation_date' => 'sometimes|date',
+            'client_id' => 'required|exists:clients,id',
+            'quotation_date' => 'required|date',
             'status' => 'required|in:draft,sended,confirmed,signed,rejected',
+            'notes' => 'nullable|string',
+            'total_amount' => 'required|numeric',
             'services' => 'array',
             'services.*.service_id' => 'required|exists:services,id',
             'services.*.quantity' => 'required|integer|min:1',
             'services.*.tax' => 'nullable|numeric',
             'services.*.individual_total' => 'nullable|numeric',
         ]);
+
 
         $quote->update($validated);
 

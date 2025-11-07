@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { X, Plus } from "lucide-react";
@@ -9,11 +10,61 @@ import SelectField from "@/Components/comp-192";
 import { Label } from "@/components/ui/label";
 import ServiceSelect from "@/Components/Invoice_Quotes/ServiceSelector";
 import axios from "axios";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { terms } from "../../lib/Terms_Conditions.json";
 export default function QuoteForm() {
   const [selectedClient, setSelectedClient] = useState("");
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState([]);
+  const [quoteData, setQuoteData] = useState({});
+  const [Services, setServices] = useState([]);
+  const navigate = useNavigate();
+  const { role } = useAuth();
+
+  const location = useLocation();
+  const quoteId = location.state?.quoteId;
+
+  useEffect(() => {
+    if (!quoteId) return;
+
+    const fetchQuote = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/quotes/${quoteId}`
+        );
+
+        const data = res.data;
+        setQuoteData(data);
+
+        reset({
+          customerName: Number(data.client_id),
+          quoteId: data.id,
+          quoteDate: data.quotation_date,
+          notes: data.notes || "",
+          terms: terms,
+          items: data.quote_services.map((qs) => ({
+            service: "",
+            serviceId: Number(qs.service_id),
+            description: "",
+            quantity: qs.quantity,
+            rate: parseFloat(qs.individual_total) / qs.quantity,
+            tax: parseFloat(qs.tax),
+            discount: 0,
+            amount: parseFloat(qs.individual_total),
+          })),
+          discountValue: 0,
+          discountType: "%",
+        });
+
+        setSelectedClient(Number(data.client_id));
+      } catch (err) {
+        console.error("Failed to fetch quote:", err);
+      }
+    };
+
+    fetchQuote();
+  }, [quoteId]);
 
   const clientOptions = clients.map((c) => ({
     name: c.name || c.user?.name,
@@ -40,26 +91,58 @@ export default function QuoteForm() {
     fetchClients();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/services`
+        );
+        setServices(res.data);
+      } catch (error) {
+        console.error("Error details:", error.response?.data || error);
+        alert(
+          `Failed to get services ): ${error.response?.data?.message || error.message}`
+        );
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const cancelFunction = () => {
+    reset();
+    navigate(`/${role}/quotes`);
+  };
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
       customerName: "",
-      quoteId: "QT-000002",
-      quoteDate: "2025-11-04",
+      quoteId: "001",
+      quoteDate: new Date().toISOString().split("T")[0],
       notes: "",
-      terms: "",
+      terms: terms,
       items: [
-        { service: "", description: "", quantity: 1, rate: 0, amount: 0 },
+        {
+          service: "",
+          serviceId: null,
+          description: "",
+          quantity: 1,
+          rate: 0,
+          tax: 0,
+          discount: 0,
+          amount: 0,
+        },
       ],
       discountValue: 0,
       discountType: "%",
-      attachedFile: null,
     },
   });
 
@@ -73,82 +156,107 @@ export default function QuoteForm() {
   const discountValue = watch("discountValue") || 0;
 
   const addNewRow = () => {
-    append({ service: "", description: "", quantity: 1, rate: 0, amount: 0 });
+    append({
+      service: "",
+      serviceId: null,
+      description: "",
+      quantity: 1,
+      rate: 0,
+      tax: 0,
+      discount: 0,
+      amount: 0,
+    });
   };
 
   const deleteRow = (index) => {
     if (fields.length > 1) remove(index);
   };
 
-  const updateItem = (index, fieldName, value) => {
-    const numericValue = Number(value) || 0;
-    setValue(`items.${index}.${fieldName}`, numericValue);
+  const updateItem = (index, field, value) => {
+    setValue(`items.${index}.${field}`, Number(value));
 
-    const quantity =
-      fieldName === "quantity"
-        ? numericValue
-        : watch(`items.${index}.quantity`) || 1;
-    const rate =
-      fieldName === "rate" ? numericValue : watch(`items.${index}.rate`) || 0;
+    const quantity = Number(watch(`items.${index}.quantity`) || 1);
+    const rate = Number(watch(`items.${index}.rate`) || 0);
+    const tax = Number(watch(`items.${index}.tax`) || 0);
+    const discount = Number(watch(`items.${index}.discount`) || 0);
 
-    setValue(`items.${index}.amount`, quantity * rate);
+    const base = quantity * rate;
+    const taxAmount = base * (tax / 100);
+    const totalAfterTax = base + taxAmount;
+    const discountAmount = totalAfterTax * (discount / 100);
+    const finalAmount = totalAfterTax - discountAmount;
+
+    setValue(`items.${index}.amount`, Number(finalAmount.toFixed(2)));
   };
 
   const calculateSubTotal = () =>
     items.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
 
   const calculateDiscount = () => {
-    const value = Number(discountValue) || 0; // ensure it's a number
+    const value = Number(discountValue) || 0;
     if (discountType === "%") {
       return (calculateSubTotal() * value) / 100;
     }
-    return value; // assume $ discount
+    return value;
   };
 
   const calculateTotal = () => calculateSubTotal() - calculateDiscount();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    alert("Quote saved and sent!");
+  const onSubmit = async (data, status) => {
+    const payload = {
+      client_id: parseInt(data.customerName),
+      quotation_date: data.quoteDate,
+      status: status, // use the status from state
+      total_amount: parseFloat(
+        data.items
+          .reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0)
+          .toFixed(2)
+      ),
+      services: data.items.map((item) => ({
+        service_id: Number(item.id),
+        quantity: parseInt(item.quantity),
+        rate: parseFloat(item.rate),
+        tax: parseFloat(item.tax || 0),
+        discount: parseFloat(item.discount || 0),
+        individual_total: parseFloat(item.amount),
+      })),
+      notes: data.notes || "",
+    };
+
+    try {
+      const req = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/quotes`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      alert("Quote created successfully!");
+      reset();
+      navigate(`/${role}/quotes`);
+    } catch (error) {
+      console.error("Error details:", error.response?.data || error);
+      alert(
+        `Failed to create quote: ${error.response?.data?.message || error.message}`
+      );
+    }
   };
 
-  const services = [
-    {
-      id: "SRV-001",
-      name: "Logo Design",
-      description: "Crafting a unique visual identity mark.",
-      unitPrice: 350,
-    },
-    {
-      id: "SRV-002",
-      name: "Website Development",
-      description: "Full website build with responsive UI.",
-      unitPrice: 2000,
-    },
-    {
-      id: "SRV-003",
-      name: "Social Media Management",
-      description: "Handling posts, scheduling, and engagement.",
-      unitPrice: 750,
-    },
-    {
-      id: "SRV-004",
-      name: "Product Photography",
-      description: "High-quality shots for catalogs & online stores.",
-      unitPrice: 500,
-    },
-    {
-      id: "SRV-005",
-      name: "Brand Strategy",
-      description: "Positioning, messaging, voice & tone workshop.",
-      unitPrice: 1200,
-    },
-  ];
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     // <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:w-[60%] w-full">
     <form onSubmit={handleSubmit(onSubmit)} className="p-4 w-full">
       <h1 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-        New Quote
+        {quoteId ? "Edit Quote" : "New Quote"}
       </h1>
 
       <div className="space-y-4">
@@ -166,7 +274,7 @@ export default function QuoteForm() {
           <div className="p-4 border rounded bg-gray-50 text-sm space-y-1 max-w-[300px]">
             <p>
               <span className="font-medium">Name:</span>{" "}
-              {customerData.user.name}
+              {customerData.user?.name || customerData.name}
             </p>
             <p>
               <span className="font-medium">Address:</span>{" "}
@@ -182,6 +290,7 @@ export default function QuoteForm() {
         <FormField
           id="quoteId"
           label="Quote#"
+          readonly
           value={watch("quoteId")}
           disabled
         />
@@ -199,86 +308,145 @@ export default function QuoteForm() {
             Item Table
           </h2>
           <div className="overflow-x-auto border rounded-md rounded-br-none">
-            <table className="w-full border-collapse">
+            <table className="w-full min-w-[500px] border-collapse border border-gray-300">
               <thead>
-                <tr className="bg-gray-100">
-                  <th>ITEM DETAILS</th>
-                  <th className="text-right w-32">QUANTITY</th>
-                  <th className="text-right w-32">RATE</th>
-                  <th className="text-right w-32">AMOUNT</th>
-                  <th className="w-12"></th>
+                <tr className="bg-gray-50">
+                  <th className="p-2 text-left text-sm font-semibold text-gray-700">
+                    ITEM DETAILS
+                  </th>
+                  <th className="p-2 text-right text-sm font-semibold text-gray-700 w-30">
+                    QUANTITY
+                  </th>
+                  <th className="p-2 text-right text-sm font-semibold text-gray-700 w-30">
+                    RATE
+                  </th>
+                  <th className="p-2 text-right text-sm font-semibold text-gray-700 w-30">
+                    TAX
+                  </th>
+                  <th className="p-2 text-right text-sm font-semibold text-gray-700 w-30">
+                    DISCOUNT
+                  </th>
+                  <th className="p-2 text-right text-sm font-semibold text-gray-700 w-30">
+                    AMOUNT
+                  </th>
+                  <th className="p-2 w-16"></th>
                 </tr>
               </thead>
               <tbody>
                 {fields.map((field, index) => {
-                  const selectedService = watch(`items.${index}.service`);
+                  const selectedService = watch(`items.${index}.serviceId`);
                   return (
-                    <tr key={field.id}>
-                      <td>
+                    <tr
+                      key={field.id}
+                      className="border-b border-gray-200 hover:bg-gray-50"
+                    >
+                      <td className="p-2">
                         <ServiceSelect
-                          services={services}
+                          services={Services}
                           value={selectedService}
                           onChange={(val) => {
+                            val = Number(val); // ensure numeric
                             setValue(`items.${index}.service`, val);
-                            const service = services.find((s) => s.id === val);
-                            if (service) {
-                              setValue(
-                                `items.${index}.rate`,
-                                service.unitPrice
-                              );
-                              setValue(
-                                `items.${index}.description`,
-                                service.description
-                              );
-                              const quantity =
-                                watch(`items.${index}.quantity`) || 1;
-                              setValue(
-                                `items.${index}.amount`,
-                                quantity * service.unitPrice
-                              );
-                            }
+
+                            const service = Services.find(
+                              (s) => Number(s.id) === val
+                            );
+                            if (!service) return;
+
+                            const unitPrice = Number(service.base_Price);
+
+                            setValue(`items.${index}.id`, service.id);
+                            setValue(`items.${index}.rate`, unitPrice);
+                            setValue(
+                              `items.${index}.description`,
+                              service.description
+                            );
+
+                            const quantity = Number(
+                              watch(`items.${index}.quantity`) ?? 1
+                            );
+                            const tax = Number(
+                              watch(`items.${index}.tax`) ?? 0
+                            );
+                            const discount = Number(
+                              watch(`items.${index}.discount`) ?? 0
+                            );
+
+                            const base = quantity * unitPrice;
+                            const taxAmount = base * (tax / 100);
+                            const totalAfterTax = base + taxAmount;
+                            const discountAmount =
+                              totalAfterTax * (discount / 100);
+                            const finalAmount = totalAfterTax - discountAmount;
+
+                            setValue(
+                              `items.${index}.amount`,
+                              Number(finalAmount.toFixed(2))
+                            );
                           }}
                           placeholder="Select a service"
                         />
+
                         {selectedService && (
                           <Textarea
-                            {...register(`items.${index}.description`)}
+                            // {...register(`items.${index}.description`)}
                             placeholder="Enter service description"
-                            className="mt-2 w-full border p-2 rounded text-sm"
+                            className="mt-2 w-full border border-gray-300 p-2 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
                             rows={2}
                           />
                         )}
                       </td>
 
-                      <td>
+                      <td className="p-2">
                         <FormField
                           type="number"
-                          value={watch(`items.${index}.quantity`)}
+                          value={watch(`items.${index}.quantity`) ?? 0}
                           onChange={(e) =>
                             updateItem(index, "quantity", e.target.value)
                           }
                         />
                       </td>
 
-                      <td>
+                      <td className="p-2">
                         <FormField
                           type="number"
-                          value={watch(`items.${index}.rate`)}
+                          value={watch(`items.${index}.rate`) ?? 0}
                           onChange={(e) =>
                             updateItem(index, "rate", e.target.value)
                           }
                         />
                       </td>
 
-                      <td className="text-right">
+                      <td className="p-2">
+                        <FormField
+                          type="number"
+                          value={watch(`items.${index}.tax`) ?? 0}
+                          onChange={(e) =>
+                            updateItem(index, "tax", e.target.value)
+                          }
+                        />
+                      </td>
+
+                      <td className="p-2">
+                        <FormField
+                          type="number"
+                          value={watch(`items.${index}.discount`) ?? 0}
+                          onChange={(e) =>
+                            updateItem(index, "discount", e.target.value)
+                          }
+                        />
+                      </td>
+
+                      <td className="p-2 text-right font-medium text-gray-900">
                         {(watch(`items.${index}.amount`) || 0).toFixed(2)}
                       </td>
 
-                      <td className="text-center">
+                      <td className="p-2 text-center">
                         <button
                           type="button"
                           onClick={() => deleteRow(index)}
-                          className="text-red-500"
+                          className="text-gray-600 hover:text-red-600 transition-colors p-1"
+                          disabled={fields.length === 1}
                         >
                           <X size={20} />
                         </button>
@@ -298,7 +466,7 @@ export default function QuoteForm() {
               <Plus size={18} /> Add New Row
             </Button>
 
-            <div className=" border-gray-300 md:w-[50%] w-full px-2 rounded-bl-lg rounded-br-lg border-b border-x ">
+            <div className="border-gray-300 md:w-[50%] w-full px-2 rounded-bl-lg rounded-br-lg border-b border-x">
               <div className="flex justify-between py-3 text-lg font-semibold">
                 <span className="text-gray-800">Total ( $ )</span>
                 <span className="text-gray-800">
@@ -326,7 +494,7 @@ export default function QuoteForm() {
 
         {/* Terms & Attach File */}
         <div className="flex md:flex-row flex-col gap-4 items-start justify-between">
-          <div className="md:w-[60%] w-full">
+          <div className="w-full">
             <Label htmlFor="terms" className="mb-1">
               Terms & Conditions
             </Label>
@@ -338,34 +506,28 @@ export default function QuoteForm() {
               onChange={(e) => setValue("terms", e.target.value)}
             />
           </div>
-          <div className="md:w-[40%] w-full">
-            <FormField
-              id="attachedFile"
-              label="Attach File"
-              type="file"
-              onChange={(e) => setValue("attachedFile", e.target.files[0])}
-            />
-          </div>
         </div>
 
         {/* Buttons */}
         <div className="flex md:flex-row flex-col justify-end gap-3 mt-8">
           <Button
+            onClick={cancelFunction}
             type="button"
             className="px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded font-medium text-sm hover:bg-gray-50 transition-colors"
           >
             Cancel
           </Button>
           <Button
+            onClick={() => handleSubmit((data) => onSubmit(data, "draft"))()}
             type="button"
-            onClick={() => console.log("Draft:", watch())}
             className="px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded font-medium text-sm hover:bg-gray-50 transition-colors"
           >
             Save as Draft
           </Button>
+
           <Button
-            type="submit"
-            className="px-6 py-2 bg-blue-500 text-white rounded font-medium text-sm hover:bg-blue-600 transition-colors"
+            onClick={() => handleSubmit((data) => onSubmit(data, "sended"))()}
+            type="button"
           >
             Save and Send
           </Button>

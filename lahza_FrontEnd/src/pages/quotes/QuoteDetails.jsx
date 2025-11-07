@@ -88,10 +88,8 @@ export default function QuoteDetails() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Inv_Qt_sidebar type="quote" data={quotes} />
-      {/* Main Content */}
-      <Inv_Qt_page type="quote" data={quotes} />
+      <Inv_Qt_sidebar type="quotes" data={quotes} />
+      <Inv_Qt_page type="quotes" data={quotes} />
     </div>
   );
 }

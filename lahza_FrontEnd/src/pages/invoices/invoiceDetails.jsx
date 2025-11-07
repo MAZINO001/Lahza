@@ -51,9 +51,9 @@ export default function Invoice_Details() {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <Inv_Qt_sidebar type="invoice" data={invoices} />
+      <Inv_Qt_sidebar type="invoices" data={invoices} />
       {/* Main Content */}
-      <Inv_Qt_page type="invoice" data={invoices} />
+      <Inv_Qt_page type="invoices" data={invoices} />
     </div>
   );
 }
