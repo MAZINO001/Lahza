@@ -3,6 +3,10 @@ const statusConfig = {
     label: "Pending",
     color: "bg-yellow-100 text-yellow-800 border-yellow-200",
   },
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 7c16a5b5c48763730d9ca99f8b523a5f0ceab901
   accepted: {
     label: "Accepted",
     color: "bg-green-100 text-green-800 border-green-200",

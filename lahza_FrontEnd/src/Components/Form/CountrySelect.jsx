@@ -13,6 +13,7 @@ import ErrorMessage from "../../Components/Form/ErrorMessage";
 export default function CountrySelect({ value, onChange, errors }) {
   const [countries, setCountries] = useState([]);
   const [search, setSearch] = useState("");
+<<<<<<< HEAD
 
   // useEffect(() => {
   //   const fetchCountries = async () => {
@@ -31,6 +32,8 @@ export default function CountrySelect({ value, onChange, errors }) {
   //   };
   //   fetchCountries();
   // }, []);
+=======
+>>>>>>> 7c16a5b5c48763730d9ca99f8b523a5f0ceab901
   useEffect(() => {
     const fetchCountries = async () => {
       try {

@@ -5,22 +5,24 @@ import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ConfirmPassword from "../pages/Auth/ConfirmPassword";
 import ResetPassword from "../pages/Auth/ResetPassword";
 
-import NotFound from "../pages/NotFound ";
-import Dashboard from "../pages/client/Dashboard";
-import Profile from "../pages/client/Profile";
-import Settings from "../pages/client/Settings";
-import Projects from "../pages/client/Projects";
-import ProjectDetails from "../pages/client/ProjectDetails";
-import Quotes from "../pages/client/Quotes";
-import QuoteDetails from "../pages/client/QuoteDetails";
-import Tickets from "../pages/client/Tickets";
-import Invoices from "../pages/client/Invoices";
-import Payments from "../pages/client/Payments";
-import Offers from "../pages/client/Offers";
-import Clients from "../pages/client/clients";
+import NotFound from "../pages/extras/NotFound ";
+import Dashboard from "../pages/dashboard/Dashboard";
+import Profile from "../pages/Profile/Profile";
+import Settings from "../pages/settings/Settings";
+import Projects from "../pages/projects/Projects";
+import ProjectDetails from "../pages/projects/ProjectDetails";
+import Quotes from "../pages/quotes/Quotes";
+import QuoteDetails from "../pages/quotes/QuoteDetails";
+import Tickets from "../pages/Tickets/Tickets";
+import Invoices from "../pages/invoices/Invoices";
+import Payments from "../pages/Payments/Payments";
+import Offers from "../pages/Offers/Offers";
+import Clients from "../pages/clients/Clients";
+import ClientDetails from "../pages/clients/clientDetails";
+import AddQuote from "../pages/quotes/addNew";
 
-import AuthLayout from "../pages/AuthLayout";
-import AppLayout from "../pages/AppLayout";
+import AuthLayout from "../pages/layouts/AuthLayout";
+import AppLayout from "../pages/layouts/AppLayout";
 
 import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "../hooks/useAuth";
@@ -64,11 +66,13 @@ export default function AppRoutes() {
             <Route path="projects/:id" element={<ProjectDetails />} />
             <Route path="quotes" element={<Quotes />} />
             <Route path="quotes/:id" element={<QuoteDetails />} />
+            <Route path="quotes/new" element={<AddQuote />} />
             <Route path="tickets" element={<Tickets />} />
             <Route path="invoices" element={<Invoices />} />
             <Route path="payments" element={<Payments />} />
             <Route path="offers" element={<Offers />} />
             <Route path="clients" element={<Clients />} />
+            <Route path="clients/:id" element={<ClientDetails />} />
           </Route>
         </Route>
 

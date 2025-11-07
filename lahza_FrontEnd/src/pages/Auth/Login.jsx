@@ -1,179 +1,3 @@
-// /* eslint-disable no-unused-vars */
-// import InputError from "@/Components/InputError";
-// import InputLabel from "@/Components/InputLabel";
-// import PrimaryButton from "@/Components/PrimaryButton";
-// import TextInput from "@/Components/TextInput";
-// import axios from "axios";
-// import { useState } from "react";
-// import { useForm } from "react-hook-form";
-// import { Link, useNavigate } from "react-router-dom";
-
-// export default function Login({ status, canResetPassword }) {
-//   const [submitting, setSubmitting] = useState(false);
-//   const navigate = useNavigate();
-
-//   const {
-//     register,
-//     handleSubmit,
-//     setValue,
-//     watch,
-//     formState: { errors },
-//   } = useForm({
-//     defaultValues: {
-//       email: "",
-//       password: "",
-//       remember: false,
-//     },
-//   });
-
-//   const watchedValues = watch();
-//   function getCookie(name) {
-//     const value = `; ${document.cookie}`;
-//     const parts = value.split(`; ${name}=`);
-//     if (parts.length === 2) {
-//       return decodeURIComponent(parts.pop().split(";").shift());
-//     }
-//     return null;
-//   }
-//   const onSubmit = async (data) => {
-//     setSubmitting(true);
-//     console.log("data submitted", data);
-
-//     try {
-//       await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
-//         withCredentials: true,
-//       });
-//       const res = await axios.post("http://localhost:8000/api/login", data, {
-//         withCredentials: true,
-//         headers: {
-//           Accept: "application/json",
-//           "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
-//         },
-//       });
-//       console.log("your are logged in ");
-//       navigate("/dashboard");
-//     } catch (error) {
-//       console.log("login error:", error.response?.data || error.message);
-//     } finally {
-//       setSubmitting(false);
-//     }
-//   };
-//   return (
-//     <div className="flex h-screen w-full p-4 rounded-2xl flex-col items-center justify-center lg:flex-row">
-//       {/* Left - Form */}
-//       <div className="bg-white flex w-full items-center justify-center px-6 sm:w-1/2 sm:px-12">
-//         <div className="w-full max-w-md">
-//           <h2 className="text-gray-900 mb-6 text-center text-3xl font-bold">
-//             Connexion
-//           </h2>
-
-//           {status && (
-//             <div className="text-green-600 mb-4 text-center text-sm font-medium">
-//               {status}
-//             </div>
-//           )}
-
-//           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-//             <div>
-//               <InputLabel htmlFor="email" value="Adresse email" />
-//               <TextInput
-//                 id="email"
-//                 type="email"
-//                 {...register("email", {
-//                   required: "Email is required",
-//                   pattern: {
-//                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-//                     message: "Invalid email address",
-//                   },
-//                 })}
-//                 value={watch("email")} // 👈 track value manually
-//                 onChange={(e) => setValue("email", e.target.value)} // 👈 update RHF
-//                 className="mt-1 block w-full"
-//                 autoComplete="email"
-//                 isFocused
-//               />
-//               <InputError message={errors.email?.message} className="mt-2" />
-//             </div>
-
-//             <div>
-//               <InputLabel htmlFor="password" value="Mot de passe" />
-//               <TextInput
-//                 id="password"
-//                 type="password"
-//                 {...register("password", {
-//                   required: "Password is required",
-//                 })}
-//                 value={watch("password")} // 👈 track value manually
-//                 onChange={(e) => setValue("password", e.target.value)} // 👈 update RHF
-//                 className="mt-1 block w-full"
-//                 autoComplete="password"
-//                 isFocused
-//               />
-//               <InputError message={errors.password?.message} className="mt-2" />
-//             </div>
-
-//             <div className="flex flex-col space-y-2">
-//               <label
-//                 className="flex cursor-pointer items-center"
-//                 htmlFor="remember"
-//               >
-//                 <input
-//                   type="checkbox"
-//                   id="remember"
-//                   {...register("remember")}
-//                   className="border-gray-300 text-indigo-600 focus:ring-indigo-500 rounded shadow-sm"
-//                 />
-//                 <span className="text-gray-600 ml-2 select-none text-sm">
-//                   Se souvenir de moi
-//                 </span>
-//               </label>
-
-//               <div className="flex flex-col space-y-2 sm:flex-row sm:justify-between sm:space-y-0">
-//                 {canResetPassword && (
-//                   <Link
-//                     to="/forgot-password"
-//                     className="text-gray-600 hover:text-gray-900 text-sm underline"
-//                   >
-//                     Mot de passe oublié ?
-//                   </Link>
-//                 )}
-
-//                 <Link
-//                   to="/register"
-//                   className="text-gray-600 hover:text-gray-900 text-sm underline"
-//                 >
-//                   Vous n'avez pas de compte ?
-//                 </Link>
-//               </div>
-//             </div>
-
-//             <div className="flex justify-center">
-//               <PrimaryButton
-//                 type="submit"
-//                 className="mt-2 w-full justify-center text-center"
-//                 disabled={submitting}
-//               >
-//                 {submitting ? "Connexion..." : "Connexion"}
-//               </PrimaryButton>
-//             </div>
-//           </form>
-//         </div>
-//       </div>
-//       {/* Right - Image */}
-//       <div className="w-1/2 hidden lg:block">
-//         <div
-//           className="h-full w-full bg-cover bg-center"
-//           style={{
-//             backgroundImage:
-//               "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=80')",
-//           }}
-//         />
-//       </div>
-//       ;
-//     </div>
-//   );
-// }
-
 /* eslint-disable no-unused-vars */
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
@@ -183,6 +7,7 @@ import { Button } from "@/Components/ui/button";
 import { Card, CardTitle } from "@/Components/ui/card";
 import { Input } from "@/Components/ui/input";
 import axios from "axios";
+import { t } from "i18next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -222,13 +47,17 @@ export default function Login({ status, canResetPassword }) {
       await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
         withCredentials: true,
       });
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, data, {
-        withCredentials: true,
-        headers: {
-          Accept: "application/json",
-          "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
-        },
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/login`,
+        data,
+        {
+          withCredentials: true,
+          headers: {
+            Accept: "application/json",
+            "X-XSRF-TOKEN": getCookie("XSRF-TOKEN"),
+          },
+        }
+      );
       console.log("your are logged in ");
       navigate("/dashboard");
     } catch (error) {
@@ -240,34 +69,29 @@ export default function Login({ status, canResetPassword }) {
 
   return (
     <Card className="bg-card p-4 border border-stale-900 flex flex-col md:flex-row text-foreground border-none">
-      {/* Left - Form */}
       <div className="bg-white flex flex-col  h-full w-full md:w-1/2 rounded-md p-6 justify-center items-center">
         <div className="w-full max-w-md">
-          {/* Title */}
           <CardTitle className="mb-6 text-center text-3xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-primary to-primary-gradient-end">
-            Connexion
+            {t("login.title")}
           </CardTitle>
 
-          {/* Status message */}
           {status && (
             <div className="text-green-600 mb-4 text-center text-sm font-medium">
               {status}
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* Email */}
             <div>
-              <InputLabel htmlFor="email" value="Adresse email" />
+              <InputLabel htmlFor="email" value={t("login.email")} />
               <Input
                 id="email"
                 type="email"
                 {...register("email", {
-                  required: "Email is required",
+                  required: t("validation.email_required"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    message: t("validation.email_invalid"),
                   },
                 })}
                 value={watch("email")}
@@ -279,13 +103,14 @@ export default function Login({ status, canResetPassword }) {
               <InputError message={errors.email?.message} className="mt-2" />
             </div>
 
-            {/* Password */}
             <div>
-              <InputLabel htmlFor="password" value="Mot de passe" />
+              <InputLabel htmlFor="password" value={t("login.password")} />
               <Input
                 id="password"
                 type="password"
-                {...register("password", { required: "Password is required" })}
+                {...register("password", {
+                  required: t("validation.password_required"),
+                })}
                 value={watch("password")}
                 onChange={(e) => setValue("password", e.target.value)}
                 className="mt-1 block w-full"
@@ -295,7 +120,6 @@ export default function Login({ status, canResetPassword }) {
               <InputError message={errors.password?.message} className="mt-2" />
             </div>
 
-            {/* Remember & Links */}
             <div className="flex flex-col space-y-4">
               <label
                 className="flex cursor-pointer items-center"
@@ -308,7 +132,7 @@ export default function Login({ status, canResetPassword }) {
                   className="border-gray-300 text-indigo-600 focus:ring-indigo-500 rounded shadow-sm"
                 />
                 <span className="text-gray-600 ml-2 select-none text-sm">
-                  Se souvenir de moi
+                  {t("login.remember")}
                 </span>
               </label>
 
@@ -318,33 +142,31 @@ export default function Login({ status, canResetPassword }) {
                     to="/auth/forgot-password"
                     className="text-gray-600 hover:text-gray-900 text-sm underline"
                   >
-                    Mot de passe oublié ?
+                    {t("login.forgot_password")}
                   </Link>
                 )}
                 <Link
                   to="/auth/register"
                   className="text-gray-600 hover:text-gray-900 text-sm underline"
                 >
-                  Vous n'avez pas de compte ?
+                  {t("login.no_account")}
                 </Link>
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="flex justify-center">
               <Button
                 type="submit"
                 className="mt-2 w-full justify-center text-center"
                 disabled={submitting}
               >
-                {submitting ? "Connexion..." : "Connexion"}
+                {submitting ? t("login.submitting") : t("login.submit")}
               </Button>
             </div>
           </form>
         </div>
       </div>
 
-      {/* Right - Image */}
       <div className="hidden md:block md:w-1/2 h-full">
         <img
           src="https://picsum.photos/800/800"

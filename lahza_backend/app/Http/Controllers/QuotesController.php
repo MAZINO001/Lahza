@@ -5,30 +5,32 @@ namespace App\Http\Controllers;
 use App\Models\Quotes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
- use App\Models\Quotes_service;
- use App\Models\Service;
+use App\Models\Quotes_service;
+use App\Models\Service;
+
 class QuotesController extends Controller
 {
     // GET /api/Quotess
     public function index()
     {
-    $quotes = Quotes::with('quoteServices')->get();
-$allServices = Service::all();
+        $quotes = Quotes::with(['quoteServices', 'client.user:id,name'])->get();
+        $allServices = Service::all();
 
-return response()->json([
-    'quotes' => $quotes,
-    'services' => $allServices
-]);
-
-       }
+        return response()->json([
+            'quotes' => $quotes,
+            'services' => $allServices
+        ]);
+    }
 
     // POST /api/Quotess
-     public function store(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',
             'quotation_date' => 'required|date',
             'status' => 'required|in:draft,sended,confirmed,signed,rejected',
+            'notes' => 'nullable|string',
+            'total_amount' => 'required|numeric',
             'services' => 'array',
             'services.*.service_id' => 'required|exists:services,id',
             'services.*.quantity' => 'required|integer|min:1',
@@ -43,7 +45,8 @@ return response()->json([
                 'client_id' => $validated['client_id'],
                 'quotation_date' => $validated['quotation_date'],
                 'status' => $validated['status'],
-                'total_amount' => $validated['total_amount'] ?? 0,
+                'notes' => $validated['notes'],
+                'total_amount' => $validated['total_amount'],
             ]);
 
             // Insert pivot records
@@ -59,7 +62,7 @@ return response()->json([
                 }
             }
 
-        return response()->json($quote->load('quoteServices'), 201);
+            return response()->json($quote->load('quoteServices'), 201);
         });
     }
 
@@ -76,9 +79,11 @@ return response()->json([
         $quote = Quotes::findOrFail($id);
 
         $validated = $request->validate([
-            'client_id' => 'sometimes|exists:clients,id',
-            'quotation_date' => 'sometimes|date',
+            'client_id' => 'required|exists:clients,id',
+            'quotation_date' => 'required|date',
             'status' => 'required|in:draft,sended,confirmed,signed,rejected',
+            'notes' => 'nullable|string',
+            'total_amount' => 'required|numeric',
             'services' => 'array',
             'services.*.service_id' => 'required|exists:services,id',
             'services.*.quantity' => 'required|integer|min:1',
@@ -91,7 +96,7 @@ return response()->json([
         // Update pivot table if services provided
         if (!empty($validated['services'])) {
             // Delete old pivot entries
-                $quote->quoteServices()->delete();
+            $quote->quoteServices()->delete();
 
             // Insert new pivot entries
             foreach ($validated['services'] as $service) {
@@ -105,7 +110,7 @@ return response()->json([
             }
         }
 
-    return response()->json($quote->load('quoteServices'));
+        return response()->json($quote->load('quoteServices'));
     }
 
     // DELETE /api/quotes/{id}
@@ -115,5 +120,4 @@ return response()->json([
         $quote->delete(); // Pivot entries cascade if foreign key is set
         return response()->json(null, 204);
     }
-
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route; // <-- FIXED
 use App\Models\User;
 use App\Http\Controllers\QuotesController;
+use App\Http\Controllers\ServicesController;
 
 Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
@@ -31,3 +32,5 @@ Route::get('clients/me', [ClientController::class, 'me']);
 //////////////////// Qotations Section \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 Route::apiResource('quotes', QuotesController::class);
+//////////////////// services Section \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+Route::apiResource('services', ServicesController::class);

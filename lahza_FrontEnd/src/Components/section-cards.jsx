@@ -113,7 +113,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+<<<<<<< HEAD
 import { Button } from "../Components/ui/button";
+=======
+import { Button } from "@/Components/ui/button";
+>>>>>>> 7c16a5b5c48763730d9ca99f8b523a5f0ceab901
 import { Link } from "react-router-dom";
 
 export function SectionCards() {

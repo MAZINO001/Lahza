@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Briefcase, Link, User } from "lucide-react";
-import { Button } from "../../Components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,8 +11,8 @@ import {
   CardTitle,
 } from "../../Components/ui/card";
 import { Separator } from "../../Components/ui/separator";
-import { ClientForm } from "../../Components/ClientForm";
-import { TeamClientForm } from "../../Components/TeamClientForm";
+import { ClientForm } from "../../Components/auth/ClientForm";
+import { TeamClientForm } from "../../Components/auth/TeamClientForm";
 import Login from "./Login";
 
 export default function Register({
@@ -70,10 +70,10 @@ export default function Register({
               <CardContent className="grid sm:grid-cols-2 gap-6 p-6 sm:p-8 pt-0">
                 {/* CLIENT CARD */}
                 <motion.div
-                  className="rounded-xl border border-border 
+                  className="rounded-xl border border-border
                              bg-[color-mix(in oklch, var(--primary) 10%, white)]
-                             p-6 flex flex-col items-center text-center 
-                             hover:border-primary 
+                             p-6 flex flex-col items-center text-center
+                             hover:border-primary
                              transition-colors duration-300 ease-in-out"
                 >
                   <div className="p-4 rounded-full bg-[color-mix(in oklch, var(--primary) 20%, white)] text-primary mb-4 shadow-lg">
@@ -98,9 +98,9 @@ export default function Register({
 
                 {/* WORKER CARD */}
                 <motion.div
-                  className="rounded-xl border border-border 
+                  className="rounded-xl border border-border
                              bg-[color-mix(in oklch, var(--secondary) 10%, white)]
-                             p-6 flex flex-col items-center text-center 
+                             p-6 flex flex-col items-center text-center
                              hover:border-black
                              transition-colors duration-300 ease-in-out"
                 >
